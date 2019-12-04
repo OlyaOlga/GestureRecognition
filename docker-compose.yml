@@ -1,0 +1,12 @@
+version: 2.3
+services:
+  gesture-cpu:
+    image: "gesture:cpu"
+    privileged: true
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+
