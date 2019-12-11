@@ -21,8 +21,8 @@ class CameraStreamer:
 
         self.shape = (height, width, 3)
 
-        pixels = functools.reduce(lambda x, a: x*a, self.shape)
-        self.frame_shared_memory = Array(ctypes.c_uint8, pixels, lock=True)
+        self.pixels = functools.reduce(lambda x, a: x*a, self.shape)
+        self.frame_shared_memory = Array(ctypes.c_uint8, self.pixels, lock=True)
         self._fps = Value(ctypes.c_float, 0, lock=True)
         self._process: Union[Process, None] = None
 
@@ -39,8 +39,9 @@ class CameraStreamer:
         self._process.start()
 
     def stop(self):
-        self._process.terminate()
-        self._process = None
+        if self._process:
+            self._process.terminate()
+            self._process = None
 
     def __enter__(self):
         if self._process is not None:

@@ -1,13 +1,15 @@
+import time
+
 import numpy as np
 import cv2
 
 from src.gesture import CvGestureDetector
 from src.camera import UsbCamReader, CameraStreamer
-from src.player import DummyCpuPlayer
+from src.player import DummyCpuPlayer, User
+from src.game import Game
 
 print('Hello, world!')
 
-g = CvGestureDetector()
 
 # with UsbCamReader(0) as cam:
 #     while cv2.waitKey(1) != 27:
@@ -22,7 +24,16 @@ g = CvGestureDetector()
 #         print(stream._fps.value)
 #         pass
 
-player = DummyCpuPlayer()
-player.show_player()
-while cv2.waitKey(1):
+# player = User(0)
+# player.show_player()
+#
+# while True:
+#     pass
+
+g = Game(User(0), DummyCpuPlayer(), 10)
+for i in range(3):
+    g.start_game()
     pass
+
+g.end_game()
+

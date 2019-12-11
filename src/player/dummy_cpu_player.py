@@ -1,6 +1,7 @@
 from multiprocessing import Process, Value
 import time
 import ctypes
+from typing import Tuple
 
 import numpy as np
 
@@ -20,9 +21,13 @@ class DummyCpuPlayer(CpuPlayer):
         super().__del__()
         self._thread_gesture_choice.terminate()
 
-    def get_gesture(self) -> Gesture:
+    def get_gesture(self) -> Tuple[Gesture, np.ndarray]:
         gesture = Gesture(self._current_gesture.value)
-        return gesture
+        return gesture, np.array([0, 0, 1])
+
+    # def hide_player(self):
+        # super().hide_player()
+        # self._thread_gesture_choice.terminate()
 
     def _gesture_choice_async(self):
         while True:
