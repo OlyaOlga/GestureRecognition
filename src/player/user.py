@@ -7,7 +7,7 @@ import cv2
 from src.global_locl import Lock
 
 from src.camera import CameraStreamer
-from src.gesture import CvGestureDetector, GestureDetectorBase, Gesture
+from src.gesture import CvGestureDetector, GestureDetectorBase, Gesture, AiDetector
 from .player import Player
 from .image_hub import ImageHub
 
@@ -20,7 +20,7 @@ class User(Player):
         self._win_name = f'User {id(self)}'
 
         self.stream = CameraStreamer(device)
-        self.gesture_detector: GestureDetectorBase = CvGestureDetector()
+        self.gesture_detector: GestureDetectorBase = AiDetector()
 
         self.frame_shared_memory = Array(ctypes.c_uint8, self.stream.pixels, lock=True)
 

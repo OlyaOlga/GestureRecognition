@@ -43,7 +43,8 @@ class Game:
         # self.player1.hide_player()
         # self.player2.hide_player()
         start = time.time()
-        while time.time() < start+3:
+        while time.time() < start+self.delay_choice:
+            print('show ', time.time())
             self.player1.show_async()
             self.player2.show_async()
 
