@@ -32,4 +32,4 @@ class DummyCpuPlayer(CpuPlayer):
     def _gesture_choice_async(self):
         while True:
             time.sleep(np.random.uniform(0, 3))
-            self._current_gesture.value = int(np.random.uniform(0, 3))
+            self._current_gesture.value = int(np.random.uniform(0, 4))

@@ -68,7 +68,7 @@ class User(Player):
         gh, gw, _ = gesture_image.shape
 
         if self.graph_buffer is None:
-            self.graph_buffer = np.zeros([w-gw, 3])
+            self.graph_buffer = np.zeros([w-gw, 4])
 
         status_bar = np.zeros([gh, w, 3], np.uint8)
         canvas = np.concatenate([canvas, status_bar], axis=0)
@@ -81,7 +81,8 @@ class User(Player):
         chart_colors = [
             (0, 0, 255),
             (0, 255, 0),
-            (255, 0, 0)
+            (255, 0, 0),
+            (160, 160, 160)
         ]
         for idx in range(self.graph_buffer.shape[0]-1):
             col_prev = idx

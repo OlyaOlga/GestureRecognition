@@ -10,6 +10,7 @@ class ImageHub:
         Gesture.ROCK: 'data/rock.png',
         Gesture.PAPER: 'data/paper.png',
         Gesture.SCISSOR: 'data/scissors.png',
+        Gesture.NOTHING: 'data/nothing.png'
     }
 
     GESTURE_IMAGES: Dict[str, np.ndarray] = None

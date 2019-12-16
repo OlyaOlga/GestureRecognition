@@ -11,9 +11,13 @@ class Gesture(IntEnum):
     PAPER = 0,
     ROCK = 1,
     SCISSOR = 2
+    NOTHING = 3,
 
     def compare(self, other):
         if self == other:
+            return GestureBattle.DRAW
+
+        if self == Gesture.NOTHING or other == Gesture.NOTHING:
             return GestureBattle.DRAW
 
         if self == Gesture.SCISSOR and other == Gesture.ROCK:
