@@ -19,8 +19,8 @@ class Game:
         self.gestures1 = []
         self.gestures2 = []
 
-        self._results_player1 = mp.Manager().list()
-        self._results_player2 = mp.Manager().list()
+        self.player1gesture = None
+        self.player2gesture = None
 
         self.ended = False
 
@@ -29,8 +29,6 @@ class Game:
             self.end_game()
 
     def start_game(self):
-        self.player1.show_player()
-        self.player2.show_player()
 
         time.sleep(self.delay_choice)
 
@@ -42,14 +40,18 @@ class Game:
         self.gestures1.append(gesture1)
         self.gestures2.append(gesture2)
 
-        self.player1.hide_player()
-        self.player2.hide_player()
+        # self.player1.hide_player()
+        # self.player2.hide_player()
+        start = time.time()
+        while time.time() < start+3:
+            self.player1.show_async()
+            self.player2.show_async()
 
         result1 = gesture1.compare(gesture2)
         result2 = gesture2.compare(gesture1)
 
-        # self._results_player1.append(result1)
-        # self._results_player2.append(result2)
+        self.player1gesture = gesture1
+        self.player2gesture = gesture2
 
         print(f'Player1: {result1.name} | Player2 {result2.name}')
 
@@ -73,7 +75,6 @@ class Game:
             cv2.putText(canvas, 'DRAW', (60, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (160, 160, 160), 3)
 
         return canvas
-
 
     def end_game(self):
         # self._show_thread.terminate()

@@ -3,6 +3,7 @@ from typing import Union, Tuple
 from multiprocessing import Process
 
 import numpy as np
+from src.global_locl import Lock
 
 from src.gesture import Gesture
 from .image_hub import ImageHub
@@ -28,7 +29,7 @@ class Player(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def _show_async(self):
+    def show_async(self):
         pass
 
     # @abc.abstractmethod
@@ -36,8 +37,9 @@ class Player(metaclass=abc.ABCMeta):
         # self._thread_show.terminate()
 
     def show_player(self):
-        self._thread_show = Process(target=self._show_async)
-        self._thread_show.start()
+        # self._thread_show = Process(target=self.show_async)
+        # self._thread_show.start()
+        pass
 
     def hide_player(self):
         if self._thread_show is not None:

@@ -3,37 +3,41 @@ import time
 import numpy as np
 import cv2
 
-from src.gesture import CvGestureDetector
-from src.camera import UsbCamReader, CameraStreamer
-from src.player import DummyCpuPlayer, User
+from src.gesture import GestureBattle, Gesture
+from src.player import DummyCpuPlayer, User, ImageHub
 from src.game import Game
+import gc
 
 print('Hello, world!')
 
-
-# with UsbCamReader(0) as cam:
-#     while cv2.waitKey(1) != 27:
-#         cv2.imshow('frame', cam.grab_frame())
-
-# with CameraStreamer(0) as stream:
-#     while cv2.waitKey(1) != 27:
-#         # frame = np.array(stream.frame_shared_memory).reshape(stream.shape).astype(np.uint8)
-#         # frame = np.ctypeslib.as_array(stream.frame_shared_memory.get_obj()).reshape(stream.shape)
-#         frame = stream._shared_frame_to_ndarray()
-#         cv2.imshow('frame', frame)
-#         print(stream._fps.value)
-#         pass
-
-# player = User(0)
-# player.show_player()
-#
-# while True:
-#     pass
-
-g = Game(User(0), DummyCpuPlayer(), 10)
-for i in range(3):
+g = Game(User(0), DummyCpuPlayer(), 1)
+for i in range(10):
     g.start_game()
-    pass
+
+    print(g.player1gesture.value)
+
+    hub = ImageHub()
+    gesture1 = hub[g.player1gesture]
+    gesture2 = hub[g.player2gesture]
+
+    results = np.concatenate([gesture1, gesture2], axis=1)
+    canvas = np.zeros([230, 380, 3], np.uint8)
+
+    result = g.player1gesture.compare(g.player2gesture)
+
+    cv2.putText(canvas, f'Player1', (0, 100), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 255, 255), 3)
+    if result == GestureBattle.WIN:
+        cv2.putText(canvas, 'WIN', (100, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (40, 255, 40), 3)
+    if result == GestureBattle.LOSS:
+        cv2.putText(canvas, 'LOSE', (68, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (40, 40, 255), 3)
+    if result == GestureBattle.DRAW:
+        cv2.putText(canvas, 'DRAW', (60, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (160, 160, 160), 3)
+
+    results = np.concatenate([results, canvas], axis=0)
+
+    cv2.imshow('win', results)
+    cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
 g.end_game()
 

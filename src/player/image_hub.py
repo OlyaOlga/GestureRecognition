@@ -13,7 +13,7 @@ class ImageHub:
     }
 
     GESTURE_IMAGES: Dict[str, np.ndarray] = None
-    IMAGE_SIZE = (150, 150)
+    IMAGE_SIZE = (190, 190)
 
     def __init__(self):
         if ImageHub.GESTURE_IMAGES is None:
