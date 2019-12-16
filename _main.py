@@ -4,6 +4,7 @@ from src.camera import CameraStreamer
 from src.gesture import AiDetector, Gesture, GestureBattle
 from src.player import ImageHub
 import cv2
+import time
 
 class _User :
 
@@ -20,15 +21,16 @@ class _User :
         gh, gw, _ = gesture_image.shape
 
         if self.graph_buffer is None:
-            self.graph_buffer = np.zeros([w-gw, 4])
+            self.graph_buffer = np.zeros([w-gw, 3])
 
         status_bar = np.zeros([gh, w, 3], np.uint8)
         canvas = np.concatenate([canvas, status_bar], axis=0)
 
         canvas[h:, 0:gw, :] = gesture_image
 
-        self.graph_buffer = np.roll(self.graph_buffer, -1, axis=0)
+        self.graph_buffer = np.roll(self.graph_buffer, -2, axis=0)
         self.graph_buffer[-1, :] = cfd
+        self.graph_buffer[-2, :] = cfd
 
         chart_colors = [
             (0, 0, 255),
@@ -52,35 +54,41 @@ ai_gesture = AiDetector()
 user = _User()
 hub = ImageHub()
 with CameraStreamer(0) as cam:
-    for i in range(100):
-        frame = cam.frame
-        user_gesture, ucfd = ai_gesture.recognize(frame)
+    for i in range(10):
+        start = time.time()
+        gesture_time = start+1
         cpu_gesture = Gesture(int(np.random.uniform(0, 3)))
+        while time.time() < start + 5:
+            frame = cam.frame
+            user_gesture, ucfd = ai_gesture.recognize(frame)
+            if time.time() > gesture_time:
+                gesture_time = time.time()+1
+                cpu_gesture = Gesture(int(np.random.uniform(0, 3)))
 
-        canvas = user.show(user_gesture, ucfd, frame)
+            canvas = user.show(user_gesture, ucfd, frame)
 
-        cv2.imshow('User', canvas)
-        cv2.imshow('CPU', hub[cpu_gesture])
-        cv2.waitKey(1)
+            cv2.imshow('User', canvas)
+            cv2.imshow('CPU', hub[cpu_gesture])
+            cv2.waitKey(1)
 
-        print(user_gesture, cpu_gesture)
+            print(user_gesture, cpu_gesture)
 
 
-    results = np.concatenate([hub[user_gesture], hub[cpu_gesture]], axis=1)
-    canvas = np.zeros([230, 380, 3], np.uint8)
+        results = np.concatenate([hub[user_gesture], hub[cpu_gesture]], axis=1)
+        canvas = np.zeros([230, 380, 3], np.uint8)
 
-    result = user_gesture.compare(cpu_gesture)
+        result = user_gesture.compare(cpu_gesture)
 
-    cv2.putText(canvas, f'Player1', (0, 100), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 255, 255), 3)
-    if result == GestureBattle.WIN:
-        cv2.putText(canvas, 'WIN', (100, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (40, 255, 40), 3)
-    if result == GestureBattle.LOSS:
-        cv2.putText(canvas, 'LOSE', (68, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (40, 40, 255), 3)
-    if result == GestureBattle.DRAW:
-        cv2.putText(canvas, 'DRAW', (60, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (160, 160, 160), 3)
+        cv2.putText(canvas, f'Player1', (0, 100), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 255, 255), 3)
+        if result == GestureBattle.WIN:
+            cv2.putText(canvas, 'WIN', (100, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (40, 255, 40), 3)
+        if result == GestureBattle.LOSS:
+            cv2.putText(canvas, 'LOSE', (68, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (40, 40, 255), 3)
+        if result == GestureBattle.DRAW:
+            cv2.putText(canvas, 'DRAW', (60, 200), cv2.FONT_HERSHEY_COMPLEX, 3, (160, 160, 160), 3)
 
-    results = np.concatenate([results, canvas], axis=0)
-    cv2.destroyAllWindows()
-    cv2.imshow('Result', results)
-    cv2.waitKey()
+        results = np.concatenate([results, canvas], axis=0)
+        cv2.destroyAllWindows()
+        cv2.imshow('Result', results)
+        cv2.waitKey()
 

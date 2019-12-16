@@ -26,7 +26,7 @@ class AiDetector(GestureDetectorBase):
         MODEL_PATH = './data/rps.h5'
 
         # Load your trained model
-        self.model = tf.keras.model.load_model(MODEL_PATH)
+        self.model = tf.keras.models.load_model(MODEL_PATH)
 
     def create_model(self):
         self.model = tf.keras.models.Sequential()

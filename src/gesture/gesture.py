@@ -8,8 +8,8 @@ class GestureBattle(IntEnum):
 
 
 class Gesture(IntEnum):
-    ROCK = 0,
-    PAPER = 1,
+    PAPER = 0,
+    ROCK = 1,
     SCISSOR = 2
     NOTHING = 3,
 
