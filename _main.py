@@ -90,5 +90,6 @@ with CameraStreamer(0) as cam:
         results = np.concatenate([results, canvas], axis=0)
         cv2.destroyAllWindows()
         cv2.imshow('Result', results)
-        cv2.waitKey()
+        if cv2.waitKey() == 27:
+            exit(0)
 
